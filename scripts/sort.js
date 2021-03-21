@@ -1,24 +1,22 @@
-// some array
-const arr = [];
-const n = 100;
-const width = 768;
-const height = 760;
-
 const max = 300;
+const baseArr = [];
+const n = 100;
 
-let numSwaps = 0;
-
-for(let i = 0; i < n; i++) {
-    arr.push(getRandomInt(max));
-}   
+function generateArray() {
+    for(let i = 0; i < n; i++) {
+        baseArr.push(getRandomInt(max));
+    }   
+}
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 } 
 
 
-async function bubblesort() {
-    numSwaps = 0
+async function bubblesort(arr) {
+    const name = 'Bubble Sort O(n^2)'
+    const canvas = document.getElementById("bubblesort");
+    let numSwaps = 0
     let swappedIndex = 0;
     for(let i = 0 ; i < arr.length; i++) {
         for(let j = 0 ; j < arr.length - i - 1; j++) {
@@ -26,13 +24,13 @@ async function bubblesort() {
                 [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
                 numSwaps++;
                 swappedIndex = j
+
+                display(canvas, arr, swappedIndex, numSwaps, name)
+                await new Promise(r => setTimeout(r, 3))
             }
-
-            display(swappedIndex)
-
-            await new Promise(r => setTimeout(r, 5))
         }
     }
+    console.log(arr);
 }
 
 //async function mergersort() {}
@@ -48,9 +46,12 @@ async function shellsort() {}
 async function countingsort() {}
 async function combsort() {}
 
-async function gnomesort() {
+async function gnomesort(arr) {
+    const name = 'Gnome Sort O(n^2)'
+    const canvas = document.getElementById("gnomesort");
+
     let i = 0;
-    numSwaps = 0;
+    let numSwaps = 0;
     let swappedIndex = 0;
     while (i < arr.length) {
         if (i == 0) {
@@ -64,44 +65,43 @@ async function gnomesort() {
             i -= 1;
             numSwaps++;
             swappedIndex = i
+
+            display(canvas, arr, swappedIndex, numSwaps, name)
+            await new Promise(r => setTimeout(r, 3))
         }
 
-        await new Promise(r => setTimeout(r, 5))
-        display(swappedIndex)
+
     }
     console.log(arr);
 }
 
 
-async function bogosort() {}
+async function bogosort(arr) {}
 
-function display(swappedIndex) {
-
+function display(canvas, arr, swappedIndex, numSwaps, name) {
     const ctx = canvas.getContext('2d');
+    console.log(ctx);
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for(let i = 0 ; i < arr.length; i++) {
-        const rectX = i * (width / n);
-        const rectY = height - (arr[i] / max * height)
+        const rectX = i * (canvas.width / n);
+        const rectY = canvas.height - (arr[i] / max * canvas.height)
         const rectWidth  = 5;
-        const rectHeight = (arr[i] / max * height);
+        const rectHeight = (arr[i] / max * canvas.height);
         ctx.fillStyle = i == swappedIndex ? 'blue': 'green';
         ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
     }
 
     ctx.font = '20px serif';
-    ctx.fillText(`Total elements: ${n}`, 10, 30);
+    ctx.fillText(name,  10, 30);
     ctx.fillText(`Number of swaps: ${numSwaps}`, 10, 50);
-    document.getElementById("numElements").innerHTML = `Total elements: ${n}`;
-    document.getElementById("numSwaps").innerHTML = `Number of swaps: ${numSwaps}`;
 }
 
 function finished() {
     // somethng something make rectangle black
 }
 
-document.getElementById('canvas').focus()
-console.log(arr)
-//bubblesort()
-gnomesort()
+generateArray(n);
+bubblesort([...baseArr])
+gnomesort([...baseArr])
