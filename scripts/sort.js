@@ -1,9 +1,12 @@
 const max = 300;
-const baseArr = [];
 const n = 100;
 const delay = 1;
+let stopSorting = false;
+let baseArr = [];
 
 function generateArray() {
+    baseArr = [];
+
     for(let i = 0; i < n; i++) {
         baseArr.push(getRandomInt(max));
     }   
@@ -13,8 +16,17 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 } 
 
+// Map the button names to the function they should call
+let sortingAlgorithms = {"Bubble" : [bubblesort, true], "Gnome" : [gnomesort, true] , "Insertion": [insertionsort, true]} 
 
 async function bubblesort(arr) {
+    if (!sortingAlgorithms["Bubble"][1]) {
+        console.log("Please wait until the Bubble algorithm is finished")
+        return;
+    }
+
+    sortingAlgorithms["Bubble"][1] = false;
+
     const name = 'Bubble Sort O(n²)'
     const canvas = document.getElementById("bubblesort");
     const ctx = canvas.getContext('2d', { alpha: false });
@@ -35,6 +47,7 @@ async function bubblesort(arr) {
     }
     const endTime = Date.now();
     console.log("Bubble Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
+    sortingAlgorithms["Bubble"][1] = true;
 }
 
 //async function mergersort() {}
@@ -51,6 +64,13 @@ async function countingsort() {}
 async function combsort() {}
 
 async function gnomesort(arr) {
+    if (!sortingAlgorithms["Gnome"][1]) {
+        console.log("Please wait until the Gnome algorithm is finished")
+        return;
+    }
+
+    sortingAlgorithms["Gnome"][1] = false;
+
     const name = 'Gnome Sort O(n²)'
     const canvas = document.getElementById("gnomesort");
     const ctx = canvas.getContext('2d', { alpha: false });
@@ -78,6 +98,7 @@ async function gnomesort(arr) {
     }
     const endTime = Date.now();
     console.log("Gnome Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
+    sortingAlgorithms["Gnome"][1] = true;
 }
 
 
@@ -98,8 +119,9 @@ function display(canvas, ctx, arr, swappedIndex, numSwaps, timeElapsed, name) {
     }
     ctx.fillStyle = 'white'
     ctx.font = '20px serif';
-    ctx.fillText(name + " " + getSeconds(timeElapsed) + "s",  10, 30);
-    ctx.fillText(`Number of swaps: ${numSwaps}`, 10, 50);
+    ctx.fillText(name,  10, 30);
+    ctx.fillText("Time: " + getSeconds(timeElapsed) + "s",  10, 50);
+    ctx.fillText(`Number of swaps: ${numSwaps}`, 10, 70);
 }
 
 function getSeconds(ms) {
@@ -113,3 +135,14 @@ function finished() {
 generateArray(n);
 bubblesort([...baseArr])
 gnomesort([...baseArr])
+
+// when button clicked generate a new array and call the respective sorting algorithm
+const sortingButtons = document.getElementById("sorting-buttons");
+
+sortingButtons.addEventListener('click', (event) => {
+    const nameOfAlgorithm = event.target.innerText;
+    //console.log(event.target.innerText);
+
+    generateArray(n);
+    sortingAlgorithms[nameOfAlgorithm][0]([...baseArr]);
+});
