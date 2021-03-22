@@ -17,7 +17,7 @@ function getRandomInt(max) {
 } 
 
 // Map the button names to the function they should call
-let sortingAlgorithms = {"Bubble" : [bubblesort, true], "Gnome" : [gnomesort, true] , "Insertion": [insertionsort, true]} 
+let sortingAlgorithms = {"Bubble" : [bubblesort, true], "Gnome" : [gnomesort, true] , "Insertion": [insertionsort, true], "Comb" : [combsort, true]} 
 
 async function bubblesort(arr) {
     if (!sortingAlgorithms["Bubble"][1]) {
@@ -52,7 +52,39 @@ async function bubblesort(arr) {
 
 //async function mergersort() {}
 
-async function insertionsort() {}
+async function insertionsort(arr) {
+
+    sortingAlgorithms["Insertion"][1] = false;
+
+    const name = 'Insertion Sort O(n²)'
+    const canvas = document.getElementById("insertionsort");
+    const ctx = canvas.getContext('2d', { alpha: false });
+    const startTime = Date.now();
+    let numSwaps = 0
+    let swappedIndex = 0;
+    
+    let i = 1;
+    while (i < arr.length) {
+        let j = i;
+        while (j>0 && arr[j-1]>arr[j]) {
+            [arr[j], arr[j-1]] = [arr[j-1], arr[j]];
+            j -= 1;
+            numSwaps++;
+            swappedIndex = j;
+            display(canvas, ctx, arr, swappedIndex, numSwaps, Date.now() - startTime, name)
+            await new Promise(r => setTimeout(r, delay))
+        }
+        i += 1;
+
+    }
+
+    const endTime = Date.now();
+    console.log("Insertion Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
+    sortingAlgorithms["Insertion"][1] = true;
+
+}
+
+
 async function selectionsort() {}
 
 async function quicksort() {}
@@ -61,7 +93,50 @@ async function heapsort() {}
 async function shellsort() {}
 
 async function countingsort() {}
-async function combsort() {}
+
+async function combsort(arr) {
+    sortingAlgorithms["Comb"][1] = false;
+
+    let gap = arr.length;
+    let shrinkFactor = 1.3;
+    let sorted = false;
+
+    const name = 'Comb Sort O(n²)'
+    const canvas = document.getElementById("combsort");
+    const ctx = canvas.getContext('2d', { alpha: false });
+    const startTime = Date.now();
+    let numSwaps = 0
+    let swappedIndex = 0;
+
+    while (!sorted) {
+        gap = Math.floor(gap / shrinkFactor);
+
+        if (gap <= 1) {
+            gap = 1;
+            sorted = true;
+        }
+
+        let i=0;
+
+        while (i + gap < arr.length) {
+            if (arr[i] > arr[i+gap]) {
+                [arr[i], arr[i+gap]] = [arr[i+gap], arr[i]];
+                sorted = false;
+                numSwaps++;
+                swappedIndex = i;
+
+                display(canvas, ctx, arr, swappedIndex, numSwaps, Date.now() - startTime, name)
+                await new Promise(r => setTimeout(r, delay))
+            }
+
+            i += 1;
+        }
+    }
+
+    const endTime = Date.now();
+    console.log("Comb Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
+    sortingAlgorithms["Comb"][1] = true;
+}
 
 async function gnomesort(arr) {
     if (!sortingAlgorithms["Gnome"][1]) {
@@ -135,6 +210,8 @@ function finished() {
 generateArray(n);
 bubblesort([...baseArr])
 gnomesort([...baseArr])
+combsort([...baseArr])
+insertionsort([...baseArr])
 
 // when button clicked generate a new array and call the respective sorting algorithm
 const sortingButtons = document.getElementById("sorting-buttons");
