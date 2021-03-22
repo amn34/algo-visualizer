@@ -4,6 +4,7 @@ const delay = 1;
 let stopSorting = false;
 let baseArr = [];
 
+
 function generateArray() {
     baseArr = [];
 
@@ -17,15 +18,20 @@ function getRandomInt(max) {
 } 
 
 // Map the button names to the function they should call
-let sortingAlgorithms = {"Bubble" : [bubblesort, true], "Gnome" : [gnomesort, true] , "Insertion": [insertionsort, true], "Comb" : [combsort, true]} 
+let nsquaredAlgorithms = {
+    "Bubble" : [bubblesort, true],
+    "Gnome" : [gnomesort, true],
+    "Insertion": [insertionsort, true],
+    "Comb" : [combsort, true]
+} 
 
 async function bubblesort(arr) {
-    if (!sortingAlgorithms["Bubble"][1]) {
+    if (!nsquaredAlgorithms["Bubble"][1]) {
         console.log("Please wait until the Bubble algorithm is finished")
         return;
     }
 
-    sortingAlgorithms["Bubble"][1] = false;
+    nsquaredAlgorithms["Bubble"][1] = false;
 
     const name = 'Bubble Sort O(n²)'
     const canvas = document.getElementById("bubblesort");
@@ -47,14 +53,14 @@ async function bubblesort(arr) {
     }
     const endTime = Date.now();
     console.log("Bubble Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
-    sortingAlgorithms["Bubble"][1] = true;
+    nsquaredAlgorithms["Bubble"][1] = true;
 }
 
 //async function mergersort() {}
 
 async function insertionsort(arr) {
 
-    sortingAlgorithms["Insertion"][1] = false;
+    nsquaredAlgorithms["Insertion"][1] = false;
 
     const name = 'Insertion Sort O(n²)'
     const canvas = document.getElementById("insertionsort");
@@ -80,7 +86,7 @@ async function insertionsort(arr) {
 
     const endTime = Date.now();
     console.log("Insertion Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
-    sortingAlgorithms["Insertion"][1] = true;
+    nsquaredAlgorithms["Insertion"][1] = true;
 
 }
 
@@ -95,7 +101,7 @@ async function shellsort() {}
 async function countingsort() {}
 
 async function combsort(arr) {
-    sortingAlgorithms["Comb"][1] = false;
+    nsquaredAlgorithms["Comb"][1] = false;
 
     let gap = arr.length;
     let shrinkFactor = 1.3;
@@ -135,16 +141,16 @@ async function combsort(arr) {
 
     const endTime = Date.now();
     console.log("Comb Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
-    sortingAlgorithms["Comb"][1] = true;
+    nsquaredAlgorithms["Comb"][1] = true;
 }
 
 async function gnomesort(arr) {
-    if (!sortingAlgorithms["Gnome"][1]) {
+    if (!nsquaredAlgorithms["Gnome"][1]) {
         console.log("Please wait until the Gnome algorithm is finished")
         return;
     }
 
-    sortingAlgorithms["Gnome"][1] = false;
+    nsquaredAlgorithms["Gnome"][1] = false;
 
     const name = 'Gnome Sort O(n²)'
     const canvas = document.getElementById("gnomesort");
@@ -173,7 +179,7 @@ async function gnomesort(arr) {
     }
     const endTime = Date.now();
     console.log("Gnome Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
-    sortingAlgorithms["Gnome"][1] = true;
+    nsquaredAlgorithms["Gnome"][1] = true;
 }
 
 
@@ -214,12 +220,21 @@ combsort([...baseArr])
 insertionsort([...baseArr])
 
 // when button clicked generate a new array and call the respective sorting algorithm
-const sortingButtons = document.getElementById("sorting-buttons");
+const nsquared = document.getElementById("n^2");
 
-sortingButtons.addEventListener('click', (event) => {
+nsquared.addEventListener('click', (event) => {
     const nameOfAlgorithm = event.target.innerText;
-    //console.log(event.target.innerText);
-
+    let finished = true;
+    for(let algorithm of Object.keys(nsquaredAlgorithms)) {
+        finished = finished && nsquaredAlgorithms[algorithm][1]
+    }
+    if(!finished) {
+        console.log("still waiting");
+        return;
+    }
+    console.log("rerunning");
     generateArray(n);
-    sortingAlgorithms[nameOfAlgorithm][0]([...baseArr]);
+    for(let algorithm of Object.keys(nsquaredAlgorithms)) {
+        nsquaredAlgorithms[algorithm][0]([...baseArr])
+    }
 });
