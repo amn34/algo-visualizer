@@ -91,16 +91,84 @@ async function insertionsort(arr) {
     const endTime = Date.now();
     console.log("Insertion Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
     nsquaredAlgorithms["Insertion"][1] = true;
-
 }
 
 
 async function selectionsort() { }
 
-async function quicksort() { }
-async function mergesort() { }
+
+// Bottom up (Iterative implementation)
+async function mergeStart(arr) {
+    const name = 'Merge Sort O(nlogn)'
+    const canvas = document.getElementById("mergesort");
+    const ctx = canvas.getContext('2d', { alpha: false });
+    const startTime = Date.now();
+    let numSwaps = 0
+    let swappedIndex = 0;
+    mergesort(arr, name, canvas, ctx, startTime, numSwaps, swappedIndex);
+
+    const endTime = Date.now();
+    console.log("Merge Sort: " + getSeconds((endTime - startTime) - (numSwaps * delay)))
+}
+
+async function mergesort(arr, name, canvas, ctx, startTime, numSwaps, swappedIndex) {
+    let n = arr.length;
+    
+    if (n > 1) {
+        const mid = Math.floor(n / 2);
+        let left = [];
+        for (let i=0; i<mid; i++) left.push(arr[i]);
+
+        let right = [];
+        for (let i=mid; i<n; i++) right.push(arr[i]);
+
+        mergesort(left, name, canvas, ctx, startTime, numSwaps, swappedIndex);
+        mergesort(right, name, canvas, ctx, startTime, numSwaps, swappedIndex);
+
+        let i=0, j=0, k=0;
+        while (i < left.length && j < right.length) {
+            if (left[i] < right[j]) {
+                arr[k] = left[i];
+                numSwaps++;
+                swappedIndex = i;
+                i += 1;
+                
+            } else {
+                arr[k] = right[j];
+                numSwaps++;
+                swappedIndex = j;
+                j += 1;
+            }
+
+            k += 1;
+        } 
+
+
+        while(i < left.length) {
+            arr[k] = left[i];
+            i++;
+            k++;
+            swappedIndex = i;
+        }
+        
+        while(j < right.length) {
+            arr[k] = right[j];
+            j++;
+            k++;
+            swappedIndex = j;
+        }
+
+        display(canvas, ctx, arr, mid, numSwaps, Date.now() - startTime, name)
+        await new Promise(r => setTimeout(r, delay))
+
+    }
+}
+
+
+
 async function heapsort() { }
 async function shellsort() { }
+
 
 async function countingsort() { }
 
@@ -297,7 +365,9 @@ bubblesort([...baseArr])
 gnomesort([...baseArr])
 combsort([...baseArr])
 insertionsort([...baseArr])
+mergeStart([...baseArr])
 quicksort([...baseArr]);
+
 
 
 //quicksort([...baseArr], 0, baseArr.length)
