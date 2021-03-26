@@ -1,5 +1,5 @@
 const max = 300;
-const n = 10000;
+const n = 300;
 const delay = 1;
 let stopSorting = false;
 let baseArr = [];
